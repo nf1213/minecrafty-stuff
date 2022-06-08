@@ -31,8 +31,27 @@ fun LocationForm(
     viewModel: LocationsViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = LocationsViewModelFactory(MinecraftyStuffApplication.instance.repository)),
     onSave: () -> Unit = {}
 ) {
-    val state by remember { mutableStateOf(Location()) }
+    val xCoordinateField = NumberInputField(
+        label = stringResource(id = R.string.x_coordinate),
+    )
+    val yCoordinateField = NumberInputField(
+        label = stringResource(id = R.string.y_coordinate),
+        min = MINECRAFT_VERTICAL_MIN,
+        max = MINECRAFT_VERTICAL_MAX,
+    )
+    val zCoordinateField = NumberInputField(
+        label = stringResource(id = R.string.z_coordinate),
+    )
+    val numberInputState by remember { mutableStateOf(NumberInputState(
+        listOf(
+            xCoordinateField,
+            yCoordinateField,
+            zCoordinateField
+        )
+    )) }
+
     var nameState by remember { mutableStateOf("") }
+
 
     Column(
         modifier = Modifier.padding(8.dp)
@@ -45,37 +64,26 @@ fun LocationForm(
             label = { Text(text = stringResource(id = R.string.name)) },
             onValueChange = {
                 nameState = it
-                state.name = it
             },
         )
-        NumberInputField(
-            value = state.xCoordinate,
-            label = stringResource(id = R.string.x_coordinate),
-            onValueChange = { state.xCoordinate = it.toIntOrNull() ?: 0 }
-        )
-        NumberInputField(
-            value = state.xCoordinate,
-            label = stringResource(id = R.string.y_coordinate),
-            min = MINECRAFT_VERTICAL_MIN,
-            max = MINECRAFT_VERTICAL_MAX,
-            onValueChange = { state.yCoordinate = it.toIntOrNull() ?: 0 }
-        )
-        NumberInputField(
-            value = state.xCoordinate,
-            label = stringResource(id = R.string.z_coordinate),
-            onValueChange = { state.zCoordinate = it.toIntOrNull() ?: 0 }
-        )
+        numberInputState.fields.forEach {
+            it.Field()
+        }
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                viewModel.insert(Location(
-                    name = state.name,
-                    xCoordinate = state.xCoordinate,
-                    yCoordinate = state.yCoordinate,
-                    zCoordinate = state.zCoordinate
-                ))
-                onSave()
+                if (numberInputState.validate()) {
+                    viewModel.insert(
+                        Location(
+                            name = nameState,
+                            xCoordinate = xCoordinateField.state.toInt(),
+                            yCoordinate = yCoordinateField.state.toInt(),
+                            zCoordinate = zCoordinateField.state.toInt()
+                        )
+                    )
+                    onSave()
+                }
             }
         ) {
             Text(text = stringResource(id = R.string.save))
@@ -83,22 +91,50 @@ fun LocationForm(
     }
 }
 
-@Composable
-fun NumberInputField(value: Int, label: String, min: Int = -MINECRAFT_HORIZONTAL_WORLD_MAX, max: Int = MINECRAFT_HORIZONTAL_WORLD_MAX, onValueChange: (String) -> Unit) {
-    // todo validation
-    var state by remember { mutableStateOf(value.toString()) }
-    TextField(
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth(),
-        value = state,
-        label = { Text(text = label) },
-        onValueChange = {
-            state = it
-            onValueChange(it)
-        },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-    )
+class NumberInputField(
+    val label: String,
+    private val min: Int = -MINECRAFT_HORIZONTAL_WORLD_MAX,
+    private val max: Int = MINECRAFT_HORIZONTAL_WORLD_MAX,
+) {
+    var state by mutableStateOf("")
+    var hasError by mutableStateOf(false)
+
+    @Composable
+    fun Field() {
+        TextField(
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth(),
+            value = state,
+            isError = hasError,
+            label = { Text(text = label) },
+            onValueChange = {
+                state = it
+                hasError = false
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        )
+    }
+
+    fun validate(): Boolean {
+        val intValue = state.toInt()
+        if (intValue < min || intValue > max) {
+            hasError = true
+            return false
+        }
+        return true
+    }
+}
+
+class NumberInputState(var fields: List<NumberInputField>) {
+    fun validate(): Boolean {
+        var valid = true
+        for (field in fields) if (!field.validate()) {
+            valid = false
+            break
+        }
+        return valid
+    }
 }
 
 
