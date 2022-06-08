@@ -32,10 +32,22 @@ fun LocationForm(
     onSave: () -> Unit = {}
 ) {
     val state by remember { mutableStateOf(Location()) }
+    var nameState by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier.padding(8.dp)
     ) {
+        TextField(
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth(),
+            value = nameState,
+            label = { Text(text = stringResource(id = R.string.name)) },
+            onValueChange = {
+                nameState = it
+                state.name = it
+            },
+        )
         NumberInputField(
             value = state.xCoordinate,
             label = stringResource(id = R.string.x_coordinate),
@@ -58,6 +70,7 @@ fun LocationForm(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
                 viewModel.insert(Location(
+                    name = state.name,
                     xCoordinate = state.xCoordinate,
                     yCoordinate = state.yCoordinate,
                     zCoordinate = state.zCoordinate

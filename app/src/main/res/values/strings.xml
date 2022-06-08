@@ -8,4 +8,5 @@
     <string name="y_coordinate">Y Coordinate</string>
     <string name="z_coordinate">Z Coordinate</string>
     <string name="save">Save</string>
+    <string name="name">Name</string>
 </resources>

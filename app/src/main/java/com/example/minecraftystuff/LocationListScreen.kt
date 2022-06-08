@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.minecraftystuff.data.Location
@@ -33,16 +34,15 @@ fun LocationList(locations: List<Location>) {
 
 @Composable
 private fun LocationItem(location: Location) {
-    Column {
-        Text(
-            text = "${location.xCoordinate}, ${location.yCoordinate}, ${location.zCoordinate}",
-            modifier = Modifier.padding(
-                PaddingValues(
-                    horizontal = 8.dp,
-                    vertical = 8.dp
-                )
-            )
+    Column(
+        modifier = Modifier.padding(
+            PaddingValues(
+                horizontal = 8.dp,
+                vertical = 8.dp
         )
+    )) {
+        Text(text = location.name, fontWeight = FontWeight.Bold)
+        Text(text = "${location.xCoordinate}, ${location.yCoordinate}, ${location.zCoordinate}")
         Divider()
     }
 }

@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 @Entity(tableName = "location_table")
 class Location(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @ColumnInfo(name = "name") var name: String = "",
     @ColumnInfo(name = "x_coordinate") var xCoordinate: Int = 0,
     @ColumnInfo(name = "y_coordinate") var yCoordinate: Int = 0,
     @ColumnInfo(name = "z_coordinate") var zCoordinate: Int = 0
