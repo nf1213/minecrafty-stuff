@@ -1,5 +1,6 @@
 package com.example.minecraftystuff
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -34,7 +35,9 @@ class LocationsListActivity : ComponentActivity() {
                 Scaffold(
                     floatingActionButton = {
                         FloatingActionButton(
-                            onClick = { }
+                            onClick = {
+                                startActivity(Intent(this, AddLocationActivity::class.java))
+                            }
                         ) {
                             Icon(imageVector = Icons.Filled.Add, getString(R.string.add_location))
                         }

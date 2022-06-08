@@ -3,4 +3,9 @@
     <string name="locations">Locations</string>
     <string name="add_location">Add location</string>
     <string name="home">Home</string>
+    <string name="title_activity_add_location">AddLocationActivity</string>
+    <string name="x_coordinate">X Coordinate</string>
+    <string name="y_coordinate">Y Coordinate</string>
+    <string name="z_coordinate">Z Coordinate</string>
+    <string name="save">Save</string>
 </resources>
