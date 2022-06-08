@@ -14,16 +14,6 @@
         android:theme="@style/Theme.MinecraftyStuff"
         tools:targetApi="31">
         <activity
-            android:name=".AddLocationActivity"
-            android:exported="false"
-            android:label="@string/title_activity_add_location"
-            android:theme="@style/Theme.MinecraftyStuff" />
-        <activity
-            android:name=".LocationsListActivity"
-            android:exported="false"
-            android:label="@string/locations"
-            android:theme="@style/Theme.MinecraftyStuff" />
-        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
