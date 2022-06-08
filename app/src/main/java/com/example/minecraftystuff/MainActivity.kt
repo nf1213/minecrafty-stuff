@@ -98,10 +98,14 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
             )
         }
         composable(AppScreen.Locations.name) {
-            LocationList(listOf())
+            LocationsListScreen()
         }
         composable(AppScreen.AddLocation.name) {
-            LocationForm()
+            LocationForm(
+                onSave = {
+                    navController.navigate(AppScreen.Locations.name)
+                }
+            )
         }
     }
 }
