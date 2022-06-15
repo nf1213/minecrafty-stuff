@@ -29,7 +29,7 @@ fun LocationForm(
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth(),
-            value = viewModel.state.name,
+            value = viewModel.name,
             label = { Text(text = stringResource(id = R.string.name)) },
             onValueChange = {
                 viewModel.onNameChange(it)
@@ -39,8 +39,8 @@ fun LocationForm(
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth(),
-            value = viewModel.state.xCoordinate.value,
-            isError = viewModel.state.xCoordinate.error,
+            value = viewModel.xValue.value,
+            isError = viewModel.xValue.error,
             label = { Text(text = stringResource(id = R.string.x_coordinate)) },
             onValueChange = {
                 viewModel.onXChanged(it)
@@ -51,8 +51,8 @@ fun LocationForm(
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth(),
-            value = viewModel.state.yCoordinate.value,
-            isError = viewModel.state.yCoordinate.error,
+            value = viewModel.yValue.value,
+            isError = viewModel.yValue.error,
             label = { Text(text = stringResource(id = R.string.y_coordinate)) },
             onValueChange = {
                 viewModel.onYChanged(it)
@@ -63,8 +63,8 @@ fun LocationForm(
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth(),
-            value = viewModel.state.zCoordinate.value,
-            isError = viewModel.state.zCoordinate.error,
+            value = viewModel.zValue.value,
+            isError = viewModel.zValue.error,
             label = { Text(text = stringResource(id = R.string.z_coordinate)) },
             onValueChange = {
                 viewModel.onZChanged(it)
