@@ -4,15 +4,9 @@ import androidx.annotation.StringRes
 
 enum class AppScreen(
     @StringRes
-    val itemName: Int
+    val label: Int
 ) {
-    MainMenu(
-        itemName = R.string.home
-    ),
-    Locations(
-        itemName = R.string.locations
-    ),
-    AddLocation(
-        itemName = R.string.add_location
-    )
+    MainMenu(label = R.string.home),
+    Locations(label = R.string.locations),
+    AddLocation(label = R.string.add_location)
 }

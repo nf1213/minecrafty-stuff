@@ -21,13 +21,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.minecraftystuff.ui.theme.MinecraftyStuffTheme
 import com.example.minecraftystuff.ui.theme.PurpleDark
@@ -47,27 +51,30 @@ class MainActivity : ComponentActivity() {
 fun MinecraftyStuffApp() {
     MinecraftyStuffTheme {
         val navController = rememberNavController()
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+
 
         Scaffold(
             floatingActionButton = {
-                FloatingActionButton(
-                    onClick = {
-                        navController.navigate(AppScreen.AddLocation.name)
+                if (navBackStackEntry?.destination?.hierarchy?.any { it.route == AppScreen.Locations.name } == true ) {
+                    FloatingActionButton(
+                        onClick = {
+                            navController.navigate(AppScreen.AddLocation.name)
+                        }
+                    ) {
+                        Icon(imageVector = Icons.Filled.Add, stringResource(AppScreen.AddLocation.label))
                     }
-                ) {
-                    Icon(imageVector = Icons.Filled.Add, stringResource(R.string.add_location))
                 }
             },
-            isFloatingActionButtonDocked = true,
             bottomBar = {
                 BottomAppBar {
                     BottomNavigationItem(
-                        icon = { Icon(imageVector = Icons.Filled.Home, stringResource(R.string.home)) },
-                        selectedContentColor = PurpleDark,
+                        icon = { Icon(imageVector = Icons.Filled.Home, stringResource(AppScreen.MainMenu.label)) },
+                        selectedContentColor = Color.White,
                         unselectedContentColor = PurpleLight,
-                        selected = false,
+                        selected = navBackStackEntry?.destination?.hierarchy?.any { it.route == AppScreen.MainMenu.name } == true,
                         onClick = { navController.navigate(AppScreen.MainMenu.name) },
-                        label = { Text(stringResource(R.string.home)) }
+                        label = { Text(stringResource(AppScreen.MainMenu.label)) }
                     )
                 }
             }
@@ -86,16 +93,10 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
     ) {
         composable(AppScreen.MainMenu.name) {
             MainGrid(
-                menuItems = listOf(
-                    MenuItem(
-                        name = stringResource(id = R.string.locations),
-                        route = AppScreen.Locations.name
-                    )
-                ),
-                onClick = {
-                    navController.navigate(it.route)
-                }
-            )
+                menuItems = listOf(AppScreen.Locations)
+            ) {
+                navController.navigate(it.name)
+            }
         }
         composable(AppScreen.Locations.name) {
             LocationsListScreen()
@@ -112,7 +113,7 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainGrid(menuItems: List<MenuItem>, onClick: (MenuItem) -> Unit = {}) {
+fun MainGrid(menuItems: List<AppScreen>, onClick: (AppScreen) -> Unit = {}) {
     LazyVerticalGrid(
         cells = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -128,21 +129,16 @@ fun MainGrid(menuItems: List<MenuItem>, onClick: (MenuItem) -> Unit = {}) {
     }
 }
 
-data class MenuItem(
-    val name: String,
-    val route: String
-)
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MenuItemCard(item: MenuItem, onClick: () -> Unit) {
+fun MenuItemCard(item: AppScreen, onClick: () -> Unit) {
     Card(
         backgroundColor = PurpleLight,
         onClick = onClick
     ) {
         Text(
             modifier = Modifier.padding(8.dp),
-            text = item.name,
+            text = stringResource(id = item.label),
             color = PurpleDark
         )
     }
@@ -153,9 +149,7 @@ fun MenuItemCard(item: MenuItem, onClick: () -> Unit) {
 @Composable
 private fun MainGridPreview() {
     val items = listOf(
-        MenuItem("Item 1", ""),
-        MenuItem("Item 2", ""),
-        MenuItem("Item 3", "")
+        AppScreen.Locations,
     )
     MainGrid(menuItems = items) { }
 }
@@ -163,5 +157,5 @@ private fun MainGridPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun MenuItemPreview() {
-    MenuItemCard(MenuItem(name = "Item 1", route = "")) { }
+    MenuItemCard(AppScreen.Locations) { }
 }
