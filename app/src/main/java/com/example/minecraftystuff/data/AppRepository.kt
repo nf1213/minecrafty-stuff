@@ -19,4 +19,9 @@ class AppRepository(private val locationDao: LocationDao) {
     suspend fun insert(location: Location) {
         locationDao.insert(location)
     }
+
+    @WorkerThread
+    suspend fun delete(location: Location) {
+        locationDao.delete(location)
+    }
 }

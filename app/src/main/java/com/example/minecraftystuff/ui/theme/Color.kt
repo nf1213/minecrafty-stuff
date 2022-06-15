@@ -2,7 +2,8 @@ package com.example.minecraftystuff.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
+val PurpleLight = Color(0xFFCDA7FB)
+val Purple = Color(0xFF5A01DA)
+val PurpleDark = Color(0xFF3200A1)
+val Teal = Color(0xFF18C4C7)
+val Red = Color(0xFFE12F2F)

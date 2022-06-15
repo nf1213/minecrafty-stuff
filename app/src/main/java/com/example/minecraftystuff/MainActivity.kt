@@ -30,8 +30,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.minecraftystuff.ui.theme.MinecraftyStuffTheme
-import com.example.minecraftystuff.ui.theme.Purple200
-import com.example.minecraftystuff.ui.theme.Purple700
+import com.example.minecraftystuff.ui.theme.PurpleDark
+import com.example.minecraftystuff.ui.theme.PurpleLight
 
 class MainActivity : ComponentActivity() {
 
@@ -63,8 +63,8 @@ fun MinecraftyStuffApp() {
                 BottomAppBar {
                     BottomNavigationItem(
                         icon = { Icon(imageVector = Icons.Filled.Home, stringResource(R.string.home)) },
-                        selectedContentColor = Purple700,
-                        unselectedContentColor = Purple200,
+                        selectedContentColor = PurpleDark,
+                        unselectedContentColor = PurpleLight,
                         selected = false,
                         onClick = { navController.navigate(AppScreen.MainMenu.name) },
                         label = { Text(stringResource(R.string.home)) }
@@ -137,13 +137,13 @@ data class MenuItem(
 @Composable
 fun MenuItemCard(item: MenuItem, onClick: () -> Unit) {
     Card(
-        backgroundColor = Purple200,
+        backgroundColor = PurpleLight,
         onClick = onClick
     ) {
         Text(
             modifier = Modifier.padding(8.dp),
             text = item.name,
-            color = Purple700
+            color = PurpleDark
         )
     }
 }

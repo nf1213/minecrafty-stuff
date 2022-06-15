@@ -2,6 +2,7 @@ package com.example.minecraftystuff.data
 
 import androidx.room.ColumnInfo
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -25,4 +26,7 @@ interface LocationDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(location: Location)
+
+    @Delete
+    suspend fun delete(location: Location)
 }
