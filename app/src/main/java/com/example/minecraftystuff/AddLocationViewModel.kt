@@ -3,10 +3,13 @@ package com.example.minecraftystuff
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.minecraftystuff.data.AppRepository
+import com.example.minecraftystuff.data.Biome
 import com.example.minecraftystuff.data.Location
 import kotlinx.coroutines.launch
 
@@ -20,6 +23,9 @@ class AddLocationViewModel(private val repository: AppRepository) : ViewModel() 
     var xValue by mutableStateOf(InputWrapper())
     var yValue by mutableStateOf(InputWrapper())
     var zValue by mutableStateOf(InputWrapper())
+    var biome by mutableStateOf(Biome(-1, "", ""))
+
+    val allBiomes: LiveData<List<Biome>> = repository.allBiomes.asLiveData()
 
     fun onNameChange(input: String) {
         name = input
@@ -49,6 +55,10 @@ class AddLocationViewModel(private val repository: AppRepository) : ViewModel() 
         )
     }
 
+    fun onBiomeChanged(biome: Biome) {
+        this.biome = biome
+    }
+
     /**
      * Launching a new coroutine to insert the data in a non-blocking way
      */
@@ -60,7 +70,8 @@ class AddLocationViewModel(private val repository: AppRepository) : ViewModel() 
             name = name,
             xCoordinate = xValue.value.trim().toInt(),
             yCoordinate = yValue.value.trim().toInt(),
-            zCoordinate = zValue.value.trim().toInt()
+            zCoordinate = zValue.value.trim().toInt(),
+            biomeId = biome.id
         )
         repository.insert(location)
         onSuccess()

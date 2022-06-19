@@ -7,6 +7,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.minecraftystuff.data.AppRepository
 import com.example.minecraftystuff.data.Location
+import com.example.minecraftystuff.data.LocationWithBiome
 import kotlinx.coroutines.launch
 
 class LocationsViewModel(private val repository: AppRepository) : ViewModel() {
@@ -14,7 +15,7 @@ class LocationsViewModel(private val repository: AppRepository) : ViewModel() {
     // - We can put an observer on the data (instead of polling for changes) and only update the
     //   the UI when the data actually changes.
     // - Repository is completely separated from the UI through the ViewModel.
-    val allLocations: LiveData<List<Location>> = repository.allLocations.asLiveData()
+    val allLocations: LiveData<List<LocationWithBiome>> = repository.allLocations.asLiveData()
 
 
     fun deleteLocation(location: Location) {

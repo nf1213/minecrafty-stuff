@@ -53,7 +53,6 @@ fun MinecraftyStuffApp() {
         val navController = rememberNavController()
         val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-
         Scaffold(
             floatingActionButton = {
                 if (navBackStackEntry?.destination?.hierarchy?.any { it.route == AppScreen.Locations.name } == true ) {

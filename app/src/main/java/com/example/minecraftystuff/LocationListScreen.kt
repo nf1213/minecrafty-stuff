@@ -27,11 +27,15 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.minecraftystuff.data.Biome
 import com.example.minecraftystuff.data.Location
+import com.example.minecraftystuff.data.LocationWithBiome
 import com.example.minecraftystuff.ui.theme.Red
 
 
@@ -43,14 +47,14 @@ fun LocationsListScreen(
         )
     )
 ) {
-    val locations: List<Location> by viewModel.allLocations.observeAsState(listOf())
+    val locations: List<LocationWithBiome> by viewModel.allLocations.observeAsState(listOf())
     LazyColumn {
-        items(items = locations, key = { listItem: Location -> listItem.id }) { location ->
+        items(items = locations, key = { listItem: LocationWithBiome -> listItem.location.id }) { model ->
             SwipeToDeleteLocation(
                 viewModel = viewModel,
-                item = location,
+                item = model,
                 content = {
-                    LocationItem(location)
+                    LocationItem(model)
                 })
         }
     }
@@ -60,13 +64,13 @@ fun LocationsListScreen(
 @Composable
 private fun SwipeToDeleteLocation(
     content: @Composable RowScope.() -> Unit,
-    item: Location,
+    item: LocationWithBiome,
     viewModel: LocationsViewModel
 ) {
     val dismissState = rememberDismissState()
 
     if (dismissState.isDismissed(DismissDirection.EndToStart)) {
-        viewModel.deleteLocation(item)
+        viewModel.deleteLocation(item.location)
     }
 
     SwipeToDismiss(
@@ -108,7 +112,7 @@ private fun SwipeToDeleteLocation(
 }
 
 @Composable
-private fun LocationItem(location: Location) {
+private fun LocationItem(model: LocationWithBiome) {
     Column(
         modifier = Modifier.padding(
             PaddingValues(
@@ -117,8 +121,11 @@ private fun LocationItem(location: Location) {
             )
         )
     ) {
-        Text(text = location.name, fontWeight = FontWeight.Bold)
-        Text(text = "${location.xCoordinate}, ${location.yCoordinate}, ${location.zCoordinate}")
+        Text(text = model.location.name, fontWeight = FontWeight.Bold)
+        if (model.biome != null) {
+            Text(text = model.biome.name, fontStyle = FontStyle.Italic, fontSize = 10.sp)
+        }
+        Text(text = "${model.location.xCoordinate}, ${model.location.yCoordinate}, ${model.location.zCoordinate}")
         Divider()
     }
 }
@@ -127,9 +134,9 @@ private fun LocationItem(location: Location) {
 @Composable
 private fun LocationsListPreview() {
     val items = listOf(
-        Location(id = 1, xCoordinate = 398, yCoordinate = 69, zCoordinate = 88),
-        Location(id = 2, xCoordinate = 103, yCoordinate = 57, zCoordinate = -217),
-        Location(id = 3, xCoordinate = -844, yCoordinate = 64, zCoordinate = -12)
+        LocationWithBiome(Location(name="Forest", id = 1, xCoordinate = 398, yCoordinate = 69, zCoordinate = 88), Biome(name = "Sunflower Plains", identifier = "")),
+        LocationWithBiome(Location(id = 2, xCoordinate = 103, yCoordinate = 57, zCoordinate = -217)),
+        LocationWithBiome(Location(id = 3, xCoordinate = -844, yCoordinate = 64, zCoordinate = -12))
     )
     LazyColumn {
         items(items) { location ->
