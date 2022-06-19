@@ -87,7 +87,8 @@ fun MinecraftyStuffApp() {
 fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(
         navController = navController,
-        startDestination = AppScreen.MainMenu.name,
+        // start at the locations screen because it's our only feature right now, but otherwise would be main menu
+        startDestination = AppScreen.Locations.name,
         modifier = modifier
     ) {
         composable(AppScreen.MainMenu.name) {
