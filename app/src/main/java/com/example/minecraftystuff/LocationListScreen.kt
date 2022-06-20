@@ -16,6 +16,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -48,10 +49,25 @@ fun LocationsListScreen(
     )
 ) {
     val locations: List<LocationWithBiome> by viewModel.allLocations.observeAsState(listOf())
+    LocationList(
+        locations = locations,
+        deleteLocation = {
+            viewModel.deleteLocation(it)
+        }
+    )
+}
+
+@Composable
+fun LocationList(
+    locations: List<LocationWithBiome>,
+    deleteLocation: (Location) -> Unit
+) {
     LazyColumn {
         items(items = locations, key = { listItem: LocationWithBiome -> listItem.location.id }) { model ->
             SwipeToDeleteLocation(
-                viewModel = viewModel,
+                deleteLocation = {
+                    deleteLocation(it)
+                },
                 item = model,
                 content = {
                     LocationItem(model)
@@ -65,12 +81,12 @@ fun LocationsListScreen(
 private fun SwipeToDeleteLocation(
     content: @Composable RowScope.() -> Unit,
     item: LocationWithBiome,
-    viewModel: LocationsViewModel
+    deleteLocation: (Location) -> Unit
 ) {
     val dismissState = rememberDismissState()
 
     if (dismissState.isDismissed(DismissDirection.EndToStart)) {
-        viewModel.deleteLocation(item.location)
+        deleteLocation(item.location)
     }
 
     SwipeToDismiss(
@@ -86,7 +102,7 @@ private fun SwipeToDeleteLocation(
         background = {
             val color by animateColorAsState(
                 when (dismissState.targetValue) {
-                    DismissValue.Default -> Color.White
+                    DismissValue.Default -> MaterialTheme.colors.background
                     else -> Red
                 }
             )
@@ -138,11 +154,10 @@ private fun LocationsListPreview() {
         LocationWithBiome(Location(id = 2, xCoordinate = 103, yCoordinate = 57, zCoordinate = -217)),
         LocationWithBiome(Location(id = 3, xCoordinate = -844, yCoordinate = 64, zCoordinate = -12))
     )
-    LazyColumn {
-        items(items) { location ->
-            LocationItem(location)
-        }
-    }
+    LocationList(
+        locations = items,
+        deleteLocation = {}
+    )
 }
 
 
