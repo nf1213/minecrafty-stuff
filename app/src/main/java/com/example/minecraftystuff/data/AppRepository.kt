@@ -1,7 +1,13 @@
 package com.example.minecraftystuff.data
 
 import androidx.annotation.WorkerThread
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
+import org.apache.commons.csv.CSVFormat
+import org.apache.commons.csv.CSVPrinter
+import java.io.File
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
 // instead of the whole database, because you only need access to the DAO
@@ -25,5 +31,24 @@ class AppRepository(private val locationDao: LocationDao, biomeDao: BiomeDao) {
     @WorkerThread
     suspend fun delete(location: Location) {
         locationDao.delete(location)
+    }
+
+    suspend fun exportLocations(): File = withContext(Dispatchers.IO) {
+        val file = File.createTempFile("locations_", ".csv")
+        val fileWriter = file.bufferedWriter()
+        val csvPrinter = CSVPrinter(fileWriter, CSVFormat.DEFAULT
+            .withHeader("name", "x", "y", "z", "biomeId"))
+        allLocations.first().forEach {
+            csvPrinter.printRecord(
+                it.location.name,
+                it.location.xCoordinate,
+                it.location.yCoordinate,
+                it.location.zCoordinate,
+                it.location.biomeId
+            )
+        }
+        csvPrinter.flush()
+        csvPrinter.close()
+        return@withContext file
     }
 }

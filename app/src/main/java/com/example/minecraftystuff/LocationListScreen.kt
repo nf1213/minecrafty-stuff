@@ -1,5 +1,6 @@
 package com.example.minecraftystuff
 
+import android.content.Intent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,10 +17,13 @@ import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CloudUpload
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
@@ -28,16 +32,20 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.FileProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.minecraftystuff.data.Biome
 import com.example.minecraftystuff.data.Location
 import com.example.minecraftystuff.data.LocationWithBiome
 import com.example.minecraftystuff.ui.theme.Red
+import java.io.File
 
 
 @Composable
@@ -48,13 +56,49 @@ fun LocationsListScreen(
         )
     )
 ) {
-    val locations: List<LocationWithBiome> by viewModel.allLocations.observeAsState(listOf())
-    LocationList(
-        locations = locations,
-        deleteLocation = {
-            viewModel.deleteLocation(it)
+    Column {
+        TopAppBar(
+            title = {
+                Text(text = stringResource(id = AppScreen.Locations.label))
+            },
+            actions = {
+                IconButton(onClick = {
+                    viewModel.exportLocations()
+                }) {
+                    Icon(Icons.Filled.CloudUpload, "")
+                }
+            }
+        )
+        val locations: List<LocationWithBiome> by viewModel.allLocations.observeAsState(listOf())
+        LocationList(
+            locations = locations,
+            deleteLocation = {
+                viewModel.deleteLocation(it)
+            }
+        )
+        ExportAndShareLocations(viewModel = viewModel)
+    }
+}
+
+@Composable
+private fun ExportAndShareLocations(viewModel: LocationsViewModel) {
+    val shareFile: File? by viewModel.shareFile.observeAsState(null)
+    val context = LocalContext.current
+    shareFile?.let {
+        val shareUri = FileProvider.getUriForFile(
+            context,
+            context.packageName + ".provider",
+            it
+        )
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_STREAM, shareUri)
+            type = "text/csv"
         }
-    )
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        context.startActivity(shareIntent)
+    }
 }
 
 @Composable
